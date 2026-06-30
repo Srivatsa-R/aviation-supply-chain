@@ -46,8 +46,8 @@ st.set_page_config(
     layout      = "wide",
     initial_sidebar_state = "expanded",
     menu_items  = {
-        "Get Help":     "https://github.com/YOUR_USERNAME/aviation-supply-chain",
-        "Report a bug": "https://github.com/YOUR_USERNAME/aviation-supply-chain/issues",
+        "Get Help":     "https://github.com/srivatsa-R/aviation-supply-chain",
+        "Report a bug": "https://github.com/srivatsa-R/aviation-supply-chain/issues",
         "About":        "Aviation MRO Supply Chain Analytics · Built with Python & Streamlit",
     },
 )
@@ -140,7 +140,7 @@ with st.sidebar:
 
     # Links
     st.markdown("**🔗 Links**")
-    st.markdown("- [GitHub Repo](https://github.com/YOUR_USERNAME/aviation-supply-chain)")
+    st.markdown("- [GitHub Repo](https://github.com/srivatsa-R/aviation-supply-chain)")
     st.markdown("- [Interactive Network](network.html)")
     st.markdown("- [PDF Report](assets/Aviation_SC_Report.pdf)")
     st.markdown("- [LinkedIn](https://linkedin.com/in/YOUR_PROFILE)")

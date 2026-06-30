@@ -3,8 +3,8 @@
 > End-to-end network analysis, ML demand forecasting, inventory optimisation,
 > and disruption risk simulation for aviation MRO spare-parts supply chains.
 
-[![Live Dashboard](https://img.shields.io/badge/Dashboard-Live-brightgreen?style=flat-square&logo=streamlit)](https://YOUR_STREAMLIT_URL)
-[![GitHub Pages](https://img.shields.io/badge/Portfolio%20Site-Live-blue?style=flat-square&logo=github)](https://YOUR_USERNAME.github.io/aviation-supply-chain)
+[![Live Dashboard](https://img.shields.io/badge/Dashboard-Live-brightgreen?style=flat-square&logo=streamlit)](https://aviation-sc-analytics.streamlit.app/)
+[![GitHub Pages](https://img.shields.io/badge/Portfolio%20Site-Live-blue?style=flat-square&logo=github)](https://srivatsa-R.github.io/aviation-supply-chain)
 [![Python 3.11](https://img.shields.io/badge/Python-3.11-blue?style=flat-square&logo=python)](https://python.org)
 [![Tests](https://img.shields.io/badge/Tests-94%20passed-brightgreen?style=flat-square&logo=pytest)](tests/)
 [![NetworkX](https://img.shields.io/badge/NetworkX-3.x-orange?style=flat-square)](https://networkx.org)
@@ -43,10 +43,10 @@ inventory cost <15%.
 
 | Link | Description |
 |------|-------------|
-| [🚀 Streamlit Dashboard](https://YOUR_STREAMLIT_URL) | 5-page interactive analytics app |
-| [🕸 Interactive Network](https://YOUR_USERNAME.github.io/aviation-supply-chain/network.html) | 32-node Pyvis supply chain graph |
-| [🌍 Portfolio Site](https://YOUR_USERNAME.github.io/aviation-supply-chain) | Full project landing page |
-| [📄 PDF Report](https://YOUR_USERNAME.github.io/aviation-supply-chain/assets/Aviation_SC_Report.pdf) | Executive summary report |
+| [🚀 Streamlit Dashboard](https://aviation-sc-analytics.streamlit.app/) | 5-page interactive analytics app |
+| [🕸 Interactive Network](https://srivatsa-R.github.io/aviation-supply-chain/network.html) | 32-node Pyvis supply chain graph |
+| [🌍 Portfolio Site](https://srivatsa-R.github.io/aviation-supply-chain) | Full project landing page |
+| [📄 PDF Report](https://srivatsa-R.github.io/aviation-supply-chain/assets/Aviation_SC_Report.pdf) | Executive summary report |
 
 ---
 
@@ -139,7 +139,7 @@ aviation-supply-chain/
 
 ```bash
 # 1. Clone the repo
-git clone https://github.com/YOUR_USERNAME/aviation-supply-chain.git
+git clone https://github.com/srivatsa-R/aviation-supply-chain.git
 cd aviation-supply-chain
 
 # 2. Set up environment
@@ -181,7 +181,7 @@ make notebooks
 
 **Srivatsa** · Aviation Supply Chain Analytics Portfolio Project · 2025–2026
 
-[🔗 LinkedIn](https://linkedin.com/in/YOUR_PROFILE) · [🌍 Portfolio](https://YOUR_USERNAME.github.io/aviation-supply-chain) · [📧 Email](mailto:your@email.com)
+[🔗 LinkedIn](https://linkedin.com/in/YOUR_PROFILE) · [🌍 Portfolio](https://srivatsa-R.github.io/aviation-supply-chain) · [📧 Email](mailto:your@email.com)
 
 ---
 
