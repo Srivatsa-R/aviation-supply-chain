@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Aviation MRO Supply Chain Analytics · Portfolio Project</title>
+<meta name="description" content="End-to-end network analysis, ML demand forecasting, and optimisation of an aviation MRO supply chain. Python, NetworkX, XGBoost, PuLP, Streamlit."/>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Inter:wght@300;400;500;600;700&family=Syne:wght@700;800&display=swap');
+  :root{--navy:#0a0f1e;--deep:#0d1530;--panel:#111827;--border:#1e2d4a;--accent:#0ea5e9;--green:#10b981;--amber:#f59e0b;--red:#ef4444;--purple:#8b5cf6;--text:#e2e8f0;--muted:#64748b;--dim:#334155;}
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html{scroll-behavior:smooth;}
+  body{background:var(--navy);color:var(--text);font-family:'Inter',sans-serif;font-size:15px;line-height:1.7;}
+  a{color:var(--accent);text-decoration:none;}
+  a:hover{text-decoration:underline;}
+
+  /* ── NAV ── */
+  nav{position:sticky;top:0;z-index:100;background:rgba(10,15,30,0.95);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:0 40px;}
+  .nav-inner{max-width:1100px;margin:0 auto;display:flex;align-items:center;gap:32px;height:56px;}
+  .nav-logo{font-family:'Syne',sans-serif;font-weight:800;font-size:16px;color:#fff;display:flex;align-items:center;gap:8px;}
+  .nav-links{display:flex;gap:24px;margin-left:auto;}
+  .nav-links a{font-size:13px;color:var(--muted);font-weight:500;}
+  .nav-links a:hover{color:var(--text);}
+  .nav-cta{background:var(--accent);color:#000!important;padding:6px 16px;border-radius:6px;font-weight:700!important;}
+  .nav-cta:hover{background:#38bdf8;text-decoration:none!important;}
+
+  /* ── HERO ── */
+  .hero{padding:96px 40px 80px;text-align:center;position:relative;overflow:hidden;border-bottom:1px solid var(--border);}
+  .hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 80% 50% at 50% 0%,rgba(14,165,233,0.08),transparent);}
+  .hero-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(14,165,233,0.1);border:1px solid rgba(14,165,233,0.25);color:var(--accent);padding:5px 16px;border-radius:20px;font-size:12px;font-family:'JetBrains Mono',monospace;letter-spacing:.08em;text-transform:uppercase;margin-bottom:24px;}
+  .hero-badge::before{content:'●';color:var(--green);font-size:8px;animation:pulse 2s infinite;}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+  .hero h1{font-family:'Syne',sans-serif;font-size:clamp(32px,5vw,64px);font-weight:800;color:#fff;letter-spacing:-.03em;line-height:1.05;margin-bottom:20px;max-width:900px;margin-left:auto;margin-right:auto;}
+  .hero h1 em{font-style:normal;color:var(--accent);}
+  .hero-sub{font-size:17px;color:var(--muted);max-width:620px;margin:0 auto 36px;}
+  .hero-btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;}
+  .btn-primary{background:var(--accent);color:#000;padding:12px 28px;border-radius:8px;font-weight:700;font-size:15px;transition:background .2s;}
+  .btn-primary:hover{background:#38bdf8;text-decoration:none;}
+  .btn-secondary{background:transparent;color:var(--text);padding:12px 28px;border-radius:8px;font-weight:600;font-size:15px;border:1px solid var(--border);transition:border-color .2s;}
+  .btn-secondary:hover{border-color:var(--accent);text-decoration:none;}
+
+  /* ── STATS STRIP ── */
+  .stats{display:grid;grid-template-columns:repeat(6,1fr);gap:0;border-top:1px solid var(--border);border-bottom:1px solid var(--border);background:var(--deep);}
+  @media(max-width:700px){.stats{grid-template-columns:1fr 1fr 1fr;}}
+  .stat{text-align:center;padding:24px 12px;border-right:1px solid var(--border);}
+  .stat:last-child{border-right:none;}
+  .stat-val{font-family:'Syne',sans-serif;font-size:28px;font-weight:800;}
+  .stat-label{font-size:11px;color:var(--muted);margin-top:3px;letter-spacing:.03em;}
+
+  /* ── SECTION SHARED ── */
+  .section{padding:80px 40px;max-width:1100px;margin:0 auto;}
+  .section-head{text-align:center;margin-bottom:52px;}
+  .section-head h2{font-family:'Syne',sans-serif;font-size:clamp(24px,3vw,38px);font-weight:800;color:#fff;margin-bottom:10px;}
+  .section-head p{color:var(--muted);font-size:16px;max-width:560px;margin:0 auto;}
+  .tag{display:inline-block;padding:2px 9px;border-radius:12px;font-size:11px;font-weight:700;letter-spacing:.05em;margin-right:4px;margin-top:4px;}
+  .tag-blue{background:rgba(14,165,233,.1);color:#38bdf8;border:1px solid rgba(14,165,233,.2);}
+  .tag-green{background:rgba(16,185,129,.1);color:var(--green);border:1px solid rgba(16,185,129,.2);}
+  .tag-amber{background:rgba(245,158,11,.1);color:#fbbf24;border:1px solid rgba(245,158,11,.2);}
+  .tag-purple{background:rgba(139,92,246,.1);color:#a78bfa;border:1px solid rgba(139,92,246,.2);}
+
+  /* ── FINDINGS GRID ── */
+  .findings-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
+  @media(max-width:640px){.findings-grid{grid-template-columns:1fr;}}
+  .finding-card{background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:24px;position:relative;overflow:hidden;}
+  .finding-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--accent);}
+  .finding-card.green::before{background:var(--green);}
+  .finding-card.amber::before{background:var(--amber);}
+  .finding-card.purple::before{background:var(--purple);}
+  .finding-num{font-family:'Syne',sans-serif;font-size:36px;font-weight:800;color:var(--accent);margin-bottom:6px;}
+  .finding-num.green{color:var(--green);}
+  .finding-num.amber{color:var(--amber);}
+  .finding-num.purple{color:var(--purple);}
+  .finding-title{font-weight:700;font-size:15px;color:#fff;margin-bottom:8px;}
+  .finding-body{font-size:13px;color:var(--muted);line-height:1.7;}
+
+  /* ── PHASE TIMELINE ── */
+  .phases{position:relative;padding-left:28px;}
+  .phases::before{content:'';position:absolute;left:9px;top:0;bottom:0;width:2px;background:var(--border);}
+  .phase-item{position:relative;margin-bottom:32px;}
+  .phase-dot{position:absolute;left:-24px;top:4px;width:12px;height:12px;border-radius:50%;border:2px solid;background:var(--navy);}
+  .phase-week{font-size:11px;color:var(--muted);font-family:'JetBrains Mono',monospace;margin-bottom:3px;}
+  .phase-title{font-weight:700;color:#fff;font-size:15px;margin-bottom:3px;}
+  .phase-desc{font-size:13px;color:var(--muted);}
+
+  /* ── TECH STACK ── */
+  .stack-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:12px;}
+  .stack-card{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:14px;text-align:center;}
+  .stack-name{font-weight:700;font-size:13px;color:#fff;margin-bottom:4px;}
+  .stack-role{font-size:11px;color:var(--muted);}
+
+  /* ── DEMO CTA ── */
+  .demo-cta{background:linear-gradient(135deg,rgba(14,165,233,.08),rgba(16,185,129,.05));border:1px solid rgba(14,165,233,.2);border-radius:16px;padding:52px 40px;text-align:center;margin:0 40px 80px;}
+  .demo-cta h2{font-family:'Syne',sans-serif;font-size:clamp(22px,3vw,36px);font-weight:800;color:#fff;margin-bottom:12px;}
+  .demo-cta p{color:var(--muted);margin-bottom:28px;max-width:480px;margin-left:auto;margin-right:auto;}
+
+  /* ── FOOTER ── */
+  footer{border-top:1px solid var(--border);padding:32px 40px;text-align:center;font-size:13px;color:var(--muted);}
+  footer strong{color:var(--text);}
+
+  /* ── CODE SNIPPET ── */
+  .code-snippet{background:rgba(0,0,0,.5);border:1px solid var(--dim);border-radius:8px;padding:14px 18px;font-family:'JetBrains Mono',monospace;font-size:12px;color:#93c5fd;line-height:1.8;overflow-x:auto;margin-top:16px;text-align:left;}
+  .code-comment{color:var(--dim);}
+</style>
+</head>
+<body>
+
+<!-- ── NAV ── -->
+<nav>
+  <div class="nav-inner">
+    <div class="nav-logo">✈️ Aviation SC Analytics</div>
+    <div class="nav-links">
+      <a href="#findings">Findings</a>
+      <a href="#phases">Phases</a>
+      <a href="#stack">Stack</a>
+      <a href="network.html">Network</a>
+      <a href="https://github.com/YOUR_USERNAME/aviation-supply-chain" target="_blank">GitHub</a>
+      <a href="YOUR_STREAMLIT_URL" class="nav-cta" target="_blank">🚀 Live Dashboard</a>
+    </div>
+  </div>
+</nav>
+
+<!-- ── HERO ── -->
+<div class="hero">
+  <div class="hero-badge">Portfolio Project · Aviation Analytics · 2025–2026</div>
+  <h1>Aviation MRO<br>Supply Chain <em>Analytics</em></h1>
+  <p class="hero-sub">
+    End-to-end network analysis, ML demand forecasting, inventory optimisation,
+    and disruption risk simulation — deployed as a live interactive dashboard.
+  </p>
+  <div class="hero-btns">
+    <a href="YOUR_STREAMLIT_URL" class="btn-primary" target="_blank">🚀 Open Live Dashboard</a>
+    <a href="https://github.com/YOUR_USERNAME/aviation-supply-chain" class="btn-secondary" target="_blank">⭐ View on GitHub</a>
+    <a href="network.html" class="btn-secondary">🕸 Interactive Network</a>
+    <a href="assets/Aviation_SC_Report.pdf" class="btn-secondary" target="_blank">📄 PDF Report</a>
+  </div>
+</div>
+
+<!-- ── STATS ── -->
+<div class="stats">
+  <div class="stat"><div class="stat-val" style="color:#0ea5e9">32</div><div class="stat-label">Supply chain nodes</div></div>
+  <div class="stat"><div class="stat-val" style="color:#10b981">2.05%</div><div class="stat-label">XGBoost MAPE</div></div>
+  <div class="stat"><div class="stat-val" style="color:#f59e0b">$4.37M</div><div class="stat-label">Inventory saving/yr</div></div>
+  <div class="stat"><div class="stat-val" style="color:#10b981">$13.1M</div><div class="stat-label">LP route saving</div></div>
+  <div class="stat"><div class="stat-val" style="color:#8b5cf6">92%</div><div class="stat-label">RF accuracy</div></div>
+  <div class="stat"><div class="stat-val" style="color:#ef4444">194d</div><div class="stat-label">Longest supply path</div></div>
+</div>
+
+<!-- ── FINDINGS ── -->
+<div class="section" id="findings">
+  <div class="section-head">
+    <h2>Key Analytical Findings</h2>
+    <p>Six quantified insights across network analysis, forecasting, inventory, and risk domains</p>
+  </div>
+  <div class="findings-grid">
+    <div class="finding-card">
+      <div class="finding-num">45.3%</div>
+      <div class="finding-title">Supply path length increase after 5-node attack</div>
+      <div class="finding-body">Removing just 5 high-betweenness suppliers (15.6% of nodes) disrupts 39% of all supply edges. Network fractures into disconnected components at Step 4 of the simulation.</div>
+    </div>
+    <div class="finding-card green">
+      <div class="finding-num green">84.4%</div>
+      <div class="finding-title">XGBoost accuracy improvement over ARIMA baseline</div>
+      <div class="finding-body">XGBoost achieves 2.05% MAPE vs ARIMA's 13.11% by incorporating 16 engineered features including demand lags, seasonality signals, part criticality, and supply context.</div>
+    </div>
+    <div class="finding-card amber">
+      <div class="finding-num amber">$4.37M</div>
+      <div class="finding-title">Annual inventory cost saving from EOQ optimisation</div>
+      <div class="finding-body">24% reduction across 196 SKUs. Critical finding: Class-C AOG parts are under-buffered in the current policy — cheap fasteners that ground aircraft are not being held in sufficient safety stock.</div>
+    </div>
+    <div class="finding-card purple">
+      <div class="finding-num purple">60.7%</div>
+      <div class="finding-title">Cost reduction from LP route optimisation</div>
+      <div class="finding-body">PuLP linear program reduces total transportation cost from $21.6M to $8.5M. 8 optimal routes replace 15 eligible routes — concentrating volume on lowest-cost suppliers within SLA constraints.</div>
+    </div>
+    <div class="finding-card">
+      <div class="finding-num">0.675</div>
+      <div class="finding-title">RF risk probability for GE Aviation — a blind spot</div>
+      <div class="finding-body">Rule-based scoring assigns GE Aviation MEDIUM risk (38.7). Random Forest surfaces 0.675 risk probability (near HIGH) due to high lead-time variability the weighted rule model under-penalises.</div>
+    </div>
+    <div class="finding-card green">
+      <div class="finding-num green">Parker</div>
+      <div class="finding-title">Hannifin — highest composite risk score (0.2351)</div>
+      <div class="finding-body">Single-source flag combined with 91.5% average OTD (below 92% benchmark) and 14+ day lead times. Dual-sourcing this one node would reduce AOG exposure for three downstream airlines simultaneously.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ── WHAT I BUILT ── -->
+<div style="background:var(--deep);border-top:1px solid var(--border);border-bottom:1px solid var(--border);">
+  <div class="section" style="padding-top:60px;padding-bottom:60px;">
+    <div class="section-head">
+      <h2>What Was Built</h2>
+      <p>Six interconnected deliverables across data science, ML, optimisation, and deployment</p>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:20px;">
+
+      <div style="background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:22px;">
+        <div style="font-size:28px;margin-bottom:10px;">🕸</div>
+        <div style="font-weight:700;color:#fff;margin-bottom:6px;">Supply Chain Network Graph</div>
+        <div style="font-size:13px;color:var(--muted);">32-node directed graph (NetworkX + Pyvis). 5 tiers: OEM → Tier-1 → Tier-2 → MRO → Airline. Betweenness centrality, PageRank, disruption simulation.</div>
+        <div style="margin-top:10px;"><span class="tag tag-blue">NetworkX</span><span class="tag tag-blue">Pyvis</span><span class="tag tag-purple">Graph Theory</span></div>
+      </div>
+
+      <div style="background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:22px;">
+        <div style="font-size:28px;margin-bottom:10px;">📈</div>
+        <div style="font-weight:700;color:#fff;margin-bottom:6px;">Demand Forecasting</div>
+        <div style="font-size:13px;color:var(--muted);">ARIMA(2,1,2) baseline + XGBoost with 16 engineered features. Walk-forward validation on 500 SKUs × 24 months. 2.05% MAPE vs 13.11% baseline.</div>
+        <div style="margin-top:10px;"><span class="tag tag-amber">XGBoost</span><span class="tag tag-amber">ARIMA</span><span class="tag tag-blue">statsmodels</span></div>
+      </div>
+
+      <div style="background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:22px;">
+        <div style="font-size:28px;margin-bottom:10px;">📦</div>
+        <div style="font-weight:700;color:#fff;margin-bottom:6px;">Inventory Optimisation</div>
+        <div style="font-size:13px;color:var(--muted);">EOQ + safety stock (Z-scored by criticality tier: 99%/97.5%/95% SL). Reorder point calculation. $4.37M annual saving vs naive policy.</div>
+        <div style="margin-top:10px;"><span class="tag tag-green">EOQ Formula</span><span class="tag tag-green">Safety Stock</span><span class="tag tag-blue">NumPy</span></div>
+      </div>
+
+      <div style="background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:22px;">
+        <div style="font-size:28px;margin-bottom:10px;">🛣️</div>
+        <div style="font-weight:700;color:#fff;margin-bottom:6px;">LP Route Optimisation</div>
+        <div style="font-size:13px;color:var(--muted);">PuLP transportation problem with supply, demand, and lead-time SLA constraints. CBC solver finds optimal in &lt;0.01s. $13.1M saving (60.7%).</div>
+        <div style="margin-top:10px;"><span class="tag tag-amber">PuLP</span><span class="tag tag-amber">Linear Programming</span><span class="tag tag-purple">CBC Solver</span></div>
+      </div>
+
+      <div style="background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:22px;">
+        <div style="font-size:28px;margin-bottom:10px;">🏷️</div>
+        <div style="font-weight:700;color:#fff;margin-bottom:6px;">Supplier Risk Scoring</div>
+        <div style="font-size:13px;color:var(--muted);">6-factor weighted rule-based score (0–100) + Random Forest classifier (OOB accuracy 92%). Surfaces hidden risks the rule model misses.</div>
+        <div style="margin-top:10px;"><span class="tag tag-purple">Random Forest</span><span class="tag tag-blue">scikit-learn</span><span class="tag tag-green">Risk Modelling</span></div>
+      </div>
+
+      <div style="background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:22px;">
+        <div style="font-size:28px;margin-bottom:10px;">🚀</div>
+        <div style="font-weight:700;color:#fff;margin-bottom:6px;">Streamlit Dashboard</div>
+        <div style="font-size:13px;color:var(--muted);">5-page interactive dashboard deployed on Streamlit Cloud. Network embedding, Plotly charts, CSV exports. GitHub Actions CI/CD pipeline.</div>
+        <div style="margin-top:10px;"><span class="tag tag-blue">Streamlit</span><span class="tag tag-amber">Plotly</span><span class="tag tag-green">GitHub Actions</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── PHASES TIMELINE ── -->
+<div class="section" id="phases">
+  <div class="section-head">
+    <h2>Project Timeline</h2>
+    <p>10-week end-to-end delivery across 6 phases</p>
+  </div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:0 60px;">
+    <div class="phases">
+      <div class="phase-item">
+        <div class="phase-dot" style="border-color:#0ea5e9;"></div>
+        <div class="phase-week">Weeks 1–2</div>
+        <div class="phase-title">Phase 1: Research & Data Discovery</div>
+        <div class="phase-desc">Audited 5 GitHub reference projects. Identified gap: no existing project combines aviation data + network graph + ML + live deployment. Selected MRO spare parts scope.</div>
+      </div>
+      <div class="phase-item">
+        <div class="phase-dot" style="border-color:#10b981;"></div>
+        <div class="phase-week">Weeks 2–3</div>
+        <div class="phase-title">Phase 2: Environment & ETL Pipeline</div>
+        <div class="phase-desc">Built ingest.py + clean.py. Generated 500 SKU × 24 month synthetic MRO dataset. Configured GitHub Actions CI/CD (deploy.yml + lint.yml).</div>
+      </div>
+      <div class="phase-item">
+        <div class="phase-dot" style="border-color:#8b5cf6;"></div>
+        <div class="phase-week">Weeks 3–5</div>
+        <div class="phase-title">Phase 3: Network Modelling</div>
+        <div class="phase-desc">Built 32-node directed graph. Computed betweenness centrality, PageRank, composite risk scores. Simulated cascading failures. Exported Pyvis interactive network (726 KB).</div>
+      </div>
+    </div>
+    <div class="phases">
+      <div class="phase-item">
+        <div class="phase-dot" style="border-color:#f59e0b;"></div>
+        <div class="phase-week">Weeks 5–7</div>
+        <div class="phase-title">Phase 4: ML Models & Optimisation</div>
+        <div class="phase-desc">ARIMA vs XGBoost demand forecasting (2.05% MAPE). EOQ inventory optimisation ($4.37M saving). PuLP LP route optimisation ($13.1M saving). Random Forest risk classifier (92% OOB).</div>
+      </div>
+      <div class="phase-item">
+        <div class="phase-dot" style="border-color:#ef4444;"></div>
+        <div class="phase-week">Weeks 7–9</div>
+        <div class="phase-title">Phase 5: Dashboard & Deployment</div>
+        <div class="phase-desc">5-page Streamlit dashboard. GitHub Pages landing site. PDF report via nbconvert. Streamlit Cloud deployment.</div>
+      </div>
+      <div class="phase-item">
+        <div class="phase-dot" style="border-color:#10b981;"></div>
+        <div class="phase-week">Weeks 9–10</div>
+        <div class="phase-title">Phase 6: Polish & Showcase</div>
+        <div class="phase-desc">Unit tests. README badges + screenshots. LinkedIn post. Kaggle public notebook submission. Repo pinned.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── TECH STACK ── -->
+<div style="background:var(--deep);border-top:1px solid var(--border);border-bottom:1px solid var(--border);">
+  <div class="section" id="stack" style="padding-top:60px;padding-bottom:60px;">
+    <div class="section-head">
+      <h2>Technology Stack</h2>
+      <p>Pure Python, open-source, production-deployable</p>
+    </div>
+    <div class="stack-grid">
+      <div class="stack-card"><div class="stack-name">NetworkX + Pyvis</div><div class="stack-role">Graph analysis & interactive viz</div></div>
+      <div class="stack-card"><div class="stack-name">XGBoost</div><div class="stack-role">Demand forecasting (2.05% MAPE)</div></div>
+      <div class="stack-card"><div class="stack-name">statsmodels</div><div class="stack-role">ARIMA time series baseline</div></div>
+      <div class="stack-card"><div class="stack-name">PuLP</div><div class="stack-role">LP route optimisation</div></div>
+      <div class="stack-card"><div class="stack-name">scikit-learn</div><div class="stack-role">Random Forest risk classifier</div></div>
+      <div class="stack-card"><div class="stack-name">Streamlit</div><div class="stack-role">5-page interactive dashboard</div></div>
+      <div class="stack-card"><div class="stack-name">Plotly</div><div class="stack-role">Sankey, radar, waterfall charts</div></div>
+      <div class="stack-card"><div class="stack-name">Pandas + NumPy</div><div class="stack-role">ETL pipeline & data wrangling</div></div>
+      <div class="stack-card"><div class="stack-name">GitHub Actions</div><div class="stack-role">CI/CD — lint + auto-deploy</div></div>
+      <div class="stack-card"><div class="stack-name">GitHub Pages</div><div class="stack-role">Free portfolio hosting (this site)</div></div>
+      <div class="stack-card"><div class="stack-name">Jupyter + nbconvert</div><div class="stack-role">Narrative notebooks → PDF report</div></div>
+      <div class="stack-card"><div class="stack-name">SimPy</div><div class="stack-role">Discrete-event disruption sim</div></div>
+    </div>
+
+    <div class="code-snippet" style="max-width:640px;margin:24px auto 0;">
+<span class="code-comment"># How to run the project locally</span>
+git clone https://github.com/YOUR_USERNAME/aviation-supply-chain.git
+cd aviation-supply-chain
+conda env create -f environment.yml
+conda activate aviation-sc
+
+make data         <span class="code-comment"># Download & generate datasets</span>
+make run          <span class="code-comment"># Launch Streamlit dashboard</span>
+make notebooks    <span class="code-comment"># Export all notebooks → HTML</span></div>
+  </div>
+</div>
+
+<!-- ── DEMO CTA ── -->
+<div class="demo-cta">
+  <h2>✈️ Try the Live Dashboard</h2>
+  <p>Explore the interactive supply chain network, demand forecasts, inventory optimiser, and risk scores — no installation required.</p>
+  <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+    <a href="YOUR_STREAMLIT_URL" class="btn-primary" target="_blank">🚀 Open Streamlit Dashboard</a>
+    <a href="network.html" class="btn-secondary">🕸 Interactive Network Graph</a>
+  </div>
+</div>
+
+<!-- ── FOOTER ── -->
+<footer>
+  <strong>Aviation MRO Supply Chain Analytics</strong> · Personal Portfolio Project · Built with Python · 2025–2026<br>
+  <div style="margin-top:8px;display:flex;gap:20px;justify-content:center;">
+    <a href="https://github.com/YOUR_USERNAME/aviation-supply-chain" target="_blank">GitHub</a>
+    <a href="https://linkedin.com/in/YOUR_PROFILE" target="_blank">LinkedIn</a>
+    <a href="assets/Aviation_SC_Report.pdf" target="_blank">PDF Report</a>
+    <a href="network.html">Network Graph</a>
+    <a href="YOUR_STREAMLIT_URL" target="_blank">Live Dashboard</a>
+  </div>
+</footer>
+
+</body>
+</html>

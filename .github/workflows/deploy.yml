@@ -1,0 +1,84 @@
+name: 🚀 Deploy — Run Notebooks & Publish GitHub Pages
+
+# ┌─────────────────────────────────────────────────────────────────────┐
+# │  WHEN does this run?                                                │
+# │  - Every push to the 'main' branch                                  │
+# │  - Manually (via GitHub UI → Actions → Run workflow)                │
+# └─────────────────────────────────────────────────────────────────────┘
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+# Permissions needed to write to GitHub Pages
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+jobs:
+  # ── JOB 1: Run notebooks and generate HTML outputs ──────────────────
+  build:
+    name: 🔬 Run Notebooks & Build Site
+    runs-on: ubuntu-latest          # GitHub's free Linux virtual machine
+
+    steps:
+      # Step 1: Download your repo code onto the runner
+      - name: 📥 Checkout repository
+        uses: actions/checkout@v4
+
+      # Step 2: Install Python 3.11
+      - name: 🐍 Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: "pip"              # Cache pip downloads for speed
+
+      # Step 3: Install all project dependencies
+      - name: 📦 Install dependencies
+        run: |
+          pip install --upgrade pip
+          pip install -r requirements.txt
+
+      # Step 4: Run the data pipeline (generate synthetic data)
+      - name: 🗄 Generate synthetic MRO data
+        run: |
+          python -c "from src.data.ingest import generate_mro_synthetic; generate_mro_synthetic()"
+
+      # Step 5: Execute and export each notebook to HTML
+      - name: 📓 Run & export notebooks
+        run: |
+          for nb in notebooks/*.ipynb; do
+            echo "Running: $nb"
+            jupyter nbconvert \
+              --to html \
+              --execute \
+              --ExecutePreprocessor.timeout=300 \
+              --output-dir docs/ \
+              "$nb" || echo "Warning: $nb failed — continuing"
+          done
+
+      # Step 6: Copy the Pyvis network graph to docs/ if it exists
+      - name: 🌐 Copy network visualisation
+        run: |
+          [ -f supply_chain_network.html ] && cp supply_chain_network.html docs/ || true
+
+      # Step 7: Upload the docs/ folder as a Pages artifact
+      - name: 📤 Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: docs/
+
+  # ── JOB 2: Publish to GitHub Pages ──────────────────────────────────
+  deploy:
+    name: 🌍 Publish to GitHub Pages
+    needs: build                    # Only runs after 'build' succeeds
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      - name: 🚀 Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

@@ -1,0 +1,39 @@
+name: 🧹 Lint & Code Quality
+
+# Runs on every push to any branch, and on pull requests targeting main
+on:
+  push:
+    branches: [ main, dev ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  lint:
+    name: 🔍 Check Code Quality
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 📥 Checkout repository
+        uses: actions/checkout@v4
+
+      - name: 🐍 Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: "pip"
+
+      - name: 📦 Install linting tools
+        run: |
+          pip install black flake8 isort
+
+      # Check: code is formatted with Black (PEP 8 auto-formatter)
+      - name: ⬛ Black formatting check
+        run: black --check src/ tests/
+
+      # Check: no import sorting issues
+      - name: 📂 isort import order check
+        run: isort --check-only src/ tests/
+
+      # Check: no obvious Python errors (E9xx = syntax errors, F63x = undefined names)
+      - name: 🔍 Flake8 lint (errors only)
+        run: flake8 src/ tests/ --count --select=E9,F63,F7,F82 --show-source

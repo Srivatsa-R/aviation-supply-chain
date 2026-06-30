@@ -1,0 +1,63 @@
+# ============================================================
+# Aviation Supply Chain Analytics — Python Dependencies
+# ============================================================
+# Install: pip install -r requirements.txt
+# Or with conda: conda env create -f environment.yml
+
+# ── Core Data Science ─────────────────────────────────────
+pandas>=2.0.0
+numpy>=1.24.0
+scipy>=1.10.0
+
+# ── Network Analysis ──────────────────────────────────────
+networkx>=3.1
+pyvis>=0.3.2
+
+# ── Machine Learning ──────────────────────────────────────
+scikit-learn>=1.3.0
+xgboost>=2.0.0
+statsmodels>=0.14.0
+
+# ── Optimisation ──────────────────────────────────────────
+pulp>=2.7.0
+# ortools>=9.7.0          # Optional — heavier solver
+
+# ── Simulation ────────────────────────────────────────────
+simpy>=4.1.0
+
+# ── Visualisation ─────────────────────────────────────────
+plotly>=5.17.0
+matplotlib>=3.7.0
+seaborn>=0.12.0
+
+# ── Geospatial ────────────────────────────────────────────
+folium>=0.15.0
+# geopandas>=0.14.0       # Optional — requires GDAL
+
+# ── Dashboard ─────────────────────────────────────────────
+streamlit>=1.28.0
+
+# ── Notebooks ─────────────────────────────────────────────
+jupyter>=1.0.0
+nbconvert>=7.9.0
+ipykernel>=6.25.0
+
+# ── Database ──────────────────────────────────────────────
+sqlalchemy>=2.0.0
+
+# ── Data Download ─────────────────────────────────────────
+kaggle>=1.5.16
+requests>=2.31.0
+
+# ── Supply Chain Library ──────────────────────────────────
+# supplychainpy==0.0.5
+
+# ── Code Quality ──────────────────────────────────────────
+black>=23.0.0
+flake8>=6.0.0
+isort>=5.12.0
+pytest>=7.4.0
+
+# ── Utilities ─────────────────────────────────────────────
+python-dotenv>=1.0.0
+tqdm>=4.66.0
