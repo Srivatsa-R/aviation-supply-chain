@@ -142,8 +142,8 @@ with st.sidebar:
     st.markdown("**🔗 Links**")
     st.markdown("- [GitHub Repo](https://github.com/srivatsa-R/aviation-supply-chain)")
     st.markdown("- [Interactive Network](network.html)")
-    st.markdown("- [PDF Report](assets/Aviation_SC_Report.pdf)")
-    st.markdown("- [LinkedIn](https://linkedin.com/in/YOUR_PROFILE)")
+    st.markdown("- [PDF Report](https://srivatsa-r.github.io/aviation-supply-chain/assets/Aviation_SC_Report.pdf)")
+    st.markdown("- [LinkedIn](https://www.linkedin.com/in/srivatsa--r)")
 
     st.divider()
     st.caption("Phase 5 · Aviation SC Analytics · 2025")
