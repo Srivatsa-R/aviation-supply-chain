@@ -141,7 +141,7 @@ with st.sidebar:
     # Links
     st.markdown("**🔗 Links**")
     st.markdown("- [GitHub Repo](https://github.com/srivatsa-R/aviation-supply-chain)")
-    st.markdown("- [Interactive Network](network.html)")
+    st.markdown("- [Interactive Network](https://srivatsa-r.github.io/aviation-supply-chain/network.html)")
     st.markdown("- [PDF Report](https://srivatsa-r.github.io/aviation-supply-chain/assets/Aviation_SC_Report.pdf)")
     st.markdown("- [LinkedIn](https://www.linkedin.com/in/srivatsa--r)")
 
